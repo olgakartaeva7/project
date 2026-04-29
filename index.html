@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔤 Бюджетная азбука | Поймай букву!</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="bg-bubbles" id="bgBubbles"></div>
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-warning" href="#">
+            <i class="bi bi-calculator-fill me-2"></i>Бюджетная азбука
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item"><a class="nav-link" href="#alphabet"><i class="bi bi-grid me-1"></i>Азбука</a></li>
+                <li class="nav-item"><a class="nav-link" href="#about"><i class="bi bi-info-circle me-1"></i>О проекте</a></li>
+                <li class="nav-item ms-2">
+                    <button class="btn btn-warning btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#quizModal">
+                        <i class="bi bi-puzzle me-1"></i>Квиз
+                    </button>
+                </li>
+                <li class="nav-item ms-2">
+                    <button id="toggleMode" class="btn btn-outline-secondary btn-sm rounded-pill">
+                        <i class="bi bi-controller me-1"></i><span id="modeText">Обучение</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container py-4">
+    <section class="hero-section text-center py-5 mb-4">
+        <div class="mb-3"><span class="badge-glow"><i class="bi bi-stars"></i> 33 буквы • ∞ веселья <i class="bi bi-stars"></i></span></div>
+        <h1 class="display-5 fw-bold text-dark mb-3"><i class="bi bi-journal-bookmark-fill me-2"></i>Бюджетная азбука</h1>
+        <p class="lead text-muted">🎯 Кликни на карточку — БУКВА улетит! 🏃<br>Поймай её и узнай секрет бюджета!</p>
+        
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-7 col-lg-5">
+                <div class="search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="searchInput" placeholder="Напиши букву (Н) или термин (НДФЛ)...">
+                    <button id="clearSearch" class="btn-clear" title="Очистить"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="search-hint"><i class="bi bi-lightbulb-fill"></i> <strong>Лайфхак:</strong> Введи "Н" — покажу только букву Н (НДФЛ) ✨</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-4">
+        <div class="progress-card">
+            <div class="progress-header">
+                <span><i class="bi bi-trophy-fill text-warning me-2"></i>Твой прогресс:</span>
+                <span class="progress-numbers"><span id="learnedCount">0</span><span class="text-muted">/33</span></span>
+            </div>
+            <div class="progress-bar-wrapper"><div id="progressBar" class="progress-fill"></div></div>
+            <div class="progress-stats">
+                <span><i class="bi bi-fire text-danger"></i> Серия: <strong id="streakCount">0</strong></span>
+                <span><i class="bi bi-clock text-primary"></i> Поймано: <strong id="caughtCount">0</strong></span>
+                <span><i class="bi bi-star-fill text-warning"></i> Очки: <strong id="scoreCount">0</strong></span>
+            </div>
+            <div id="progressMessage" class="text-center mt-3 text-muted fw-medium"><i class="bi bi-emoji-wink"></i> Нажми на карточку — БУКВА улетит! 🚀</div>
+        </div>
+    </section>
+
+    <section id="gameMode" class="text-center mb-3 d-none">
+        <div class="mode-indicator"><i class="bi bi-lightning-fill"></i> <span>🎮 РЕЖИМ ОХОТЫ: Поймай 5 букв за 60 секунд!</span></div>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <span class="fw-bold"><i class="bi bi-stopwatch"></i> <span id="timer">60</span>с</span>
+            <span class="fw-bold"><i class="bi bi-target"></i> Цель: 5</span>
+            <span class="fw-bold"><i class="bi bi-check2-circle"></i> Поймано: <span id="caughtInRound">0</span></span>
+        </div>
+    </section>
+
+    <section id="alphabet" class="mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <h2 class="section-title mb-0"><i class="bi bi-emoji-wink-fill text-warning me-2"></i>Живой алфавит</h2>
+            <div class="d-flex gap-2">
+                <button id="resetProgress" class="btn btn-outline-secondary btn-sm rounded-pill"><i class="bi bi-arrow-repeat me-1"></i>Сброс</button>
+                <button id="shuffleLetters" class="btn btn-warning btn-sm rounded-pill"><i class="bi bi-shuffle me-1"></i>Перемешать</button>
+            </div>
+        </div>
+        <div id="lettersGrid" class="letters-grid"></div>
+    </section>
+
+    <section id="about" class="row mt-5 g-4 mb-5">
+        <div class="col-md-6">
+            <div class="info-card">
+                <div class="info-icon"><i class="bi bi-cursor-fill"></i></div>
+                <h3>🏃 Буквы убегают!</h3>
+                <p>Кликни на карточку — БУКВА вылетит и улетит в случайном направлении! Поймай её кликом и узнай бюджетный термин.</p>
+                <div class="info-tip"><i class="bi bi-mouse-fill"></i> Совет: в режиме Охоты буквы летают по всему экрану!</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="info-card gold">
+                <div class="info-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                <h3>📊 Бюджетные факты</h3>
+                <p>Налоги формируют более 70% бюджета страны. Наша Азбука помогает разобраться в сложных терминах легко и с улыбкой.</p>
+                <button class="btn btn-warning rounded-pill" data-bs-toggle="modal" data-bs-target="#factModal"><i class="bi bi-file-text-fill me-1"></i>Случайный факт</button>
+            </div>
+        </div>
+    </section>
+</div>
+
+<footer class="footer text-center py-4">
+    <div class="footer-icons">
+        <i class="bi bi-emoji-smile-fill" title="😊"></i>
+        <i class="bi bi-heart-fill" title="❤️"></i>
+        <i class="bi bi-stars" title="⭐"></i>
+        <i class="bi bi-controller" title="🎮"></i>
+    </div>
+</footer>
+
+<div id="flyingLettersContainer"></div>
+
+<div class="modal fade" id="termModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-light border-warning border-bottom">
+                <h5 class="modal-title"><i class="bi bi-journal-code text-warning me-2"></i>Бюджетный термин</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="termModalBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Закрыть</button>
+                <button type="button" id="markLearnedBtn" class="btn btn-warning rounded-pill"><i class="bi bi-check2-circle me-1"></i><span id="markBtnText">Я запомнил! +10 очков</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="factModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-light border-warning border-bottom">
+                <h5 class="modal-title"><i class="bi bi-lightbulb-fill text-warning me-2"></i>Бюджетный факт</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center" id="factModalBody"></div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="quizModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-light border-warning border-bottom">
+                <h5 class="modal-title"><i class="bi bi-puzzle-fill text-warning me-2"></i>Бюджетный блиц</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="quiz-question" id="quizQuestion"></p>
+                <div class="quiz-options" id="quizOptions"></div>
+                <div id="quizFeedback" class="quiz-feedback"></div>
+                <div class="text-center mt-3">
+                    <button class="btn btn-outline-primary btn-sm rounded-pill" id="nextQuiz"><i class="bi bi-arrow-right me-1"></i>Следующий вопрос</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
